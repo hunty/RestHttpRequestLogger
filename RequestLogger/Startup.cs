@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RequestLogger.Helpers;
 
 namespace RequestLogger
 {
@@ -58,15 +59,19 @@ namespace RequestLogger
                     Console.ResetColor();
                 }
                 Console.WriteLine();
-                if (context.Request.ContentLength > 0)
+
+                var body = await RequestHelpers.GetBodyContentAsStringAsync(context.Request);
+                if (!string.IsNullOrEmpty(body))
                 {
                     Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.WriteLine(context.Request.Body);
+                    Console.WriteLine(body);
                     Console.ResetColor();
                     Console.WriteLine();
                     sb.AppendLine("=== BODY ===");
-                    sb.AppendLine(context.Request.Body.ToString());
+                    sb.AppendLine(body);
                 }
+
+
                 await context.Response.WriteAsync(sb.ToString());
             });
         }
