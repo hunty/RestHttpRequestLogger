@@ -1,0 +1,12 @@
+language: csharp
+mono: none
+dotnet: 2.1.1
+script:
+ - dotnet restore
+addons:
+  sonarcloud:
+    organization: "hunty-github"
+    token:
+      secure: $SONAR_TOKEN
+script:
+  - sonar-scanner
