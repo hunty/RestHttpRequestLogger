@@ -29,7 +29,6 @@ namespace RequestLogger
         {
             services.AddLogging();
             services.AddSingleton<IConfigurationRoot>(Configuration);
-            //services.AddSingleton<IMyService, MyService>();
         }
 
 
@@ -42,13 +41,12 @@ namespace RequestLogger
 
             app.Run(async (context) =>
             {
+				// todo move logic in separate class
                 var sb = new StringBuilder();
                 foreach (var header in context.Request.Headers)
                 {
                     sb.AppendLine($"{header.Key}: {header.Value}");
                 }
-               
-                //await context.Response.WriteAsync(sb.ToString());
                 
                 foreach (var header in context.Request.Headers)
                 {
