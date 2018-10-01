@@ -41,36 +41,35 @@ namespace RequestLogger
 
             app.Run(async (context) =>
             {
-				// todo move logic in separate class
-                var sb = new StringBuilder();
-                foreach (var header in context.Request.Headers)
-                {
-                    sb.AppendLine($"{header.Key}: {header.Value}");
-                }
-                
-                foreach (var header in context.Request.Headers)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write($"{header.Key}: ");
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write($"{header.Value}" + Environment.NewLine);
-                    Console.ResetColor();
-                }
-                Console.WriteLine();
+	            var formater = new RequestFormatters(context.Request);
+				formater.FormatHeaders();
+				formater.FormatBody();
 
-                var body = await RequestHelpers.GetBodyContentAsStringAsync(context.Request);
-                if (!string.IsNullOrEmpty(body))
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.WriteLine(body);
-                    Console.ResetColor();
-                    Console.WriteLine();
-                    sb.AppendLine("=== BODY ===");
-                    sb.AppendLine(body);
-                }
+	            // todo move logic in separate class  
+				//foreach (var header in context.Request.Headers)
+				//{
+				//    Console.ForegroundColor = ConsoleColor.DarkGreen;
+				//    Console.Write($"{header.Key}: ");
+				//    Console.ForegroundColor = ConsoleColor.DarkGray;
+				//    Console.Write($"{header.Value}" + Environment.NewLine);
+				//    Console.ResetColor();
+				//}
+				//Console.WriteLine();
 
+				//var body = await RequestHelpers.GetBodyContentAsStringAsync(context.Request);
+				//if (!string.IsNullOrEmpty(body))
+				//{
+				//    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+				//    Console.WriteLine(body);
+				//    Console.ResetColor();
+				//    Console.WriteLine();
+				//    sb.AppendLine("=== BODY ===");
+				//    sb.AppendLine(body);
+				//}
 
-                await context.Response.WriteAsync(sb.ToString());
+	            var result = formater.GetFormattedString();
+
+                await context.Response.WriteAsync(result);
             });
         }
     }
